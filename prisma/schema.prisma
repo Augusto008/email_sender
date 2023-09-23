@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                Int                 @id                   @default(autoincrement())
+  is_active         Boolean             @default(true)
+  is_deleted        Boolean             @default(false)
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  email             String              @db.VarChar(100)      @unique
+  name              String              @db.VarChar(100)
+  password          String              @db.VarChar(100)
+  users_companies   users_companies[]
+}
+
+model roles {
+  id                Int                 @id               @default(autoincrement())
+  is_active         Boolean             @default(true)
+  is_deleted        Boolean             @default(false)
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  role              String              @db.VarChar(25)    @unique
+  users_companies   users_companies[]
+}
+
+model companies {
+  id                  Int                 @id               @default(autoincrement())
+  is_active           Boolean             @default(true)
+  is_deleted          Boolean             @default(false)
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  name                String              @db.VarChar(100)    @unique
+  users_companies     users_companies[]
+  domains             domains[]
+}
+
+model domains {
+  id                  Int                   @id               @default(autoincrement())
+  is_active           Boolean               @default(true)
+  is_deleted          Boolean               @default(false)
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  name                String                @db.VarChar(100)    @unique
+  id_companies        Int
+  companies           companies             @relation(fields: [id_companies], references: [id])
+  email_contents      email_contents[]
+}
+
+model email_contents {
+  id                  Int               @id @default(autoincrement())
+  status              String            @db.VarChar(25)
+  sender              String            @db.VarChar(100)
+  replier             String            @db.VarChar(100)
+  contact             String            @db.VarChar(20)
+  e_footer            String?           @db.Text
+  logo                String            @db.VarChar(50)
+  id_domains          Int
+  domains             domains           @relation(fields: [id_domains], references: [id])
+  email_jobs          email_jobs[]
+}
+
+model templates {
+  id                  Int                   @id               @default(autoincrement())
+  is_active           Boolean               @default(true)
+  is_deleted          Boolean               @default(false)
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  title               String                @db.VarChar(50)    @unique
+  subject             String                @db.VarChar(50)
+  receiver            String                @db.VarChar(10)
+  body                String                @db.Text
+  requirements        Json?                 @db.Json
+  url                 String?               @db.VarChar(100)   @unique
+  description         String?
+  email_jobs          email_jobs[]
+}
+
+model email_jobs {
+  id                  Int                 @id   @default(autoincrement())
+  is_broken           Boolean             @default(false)
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  attempts            Int?                @default(0)
+  status              String              @db.VarChar(10)
+  problems            Json?               @db.Json
+  received_contents   Json                @db.Json
+  id_email_contents   Int
+  id_templates        Int
+  email_contents      email_contents      @relation(fields: [id_email_contents], references: [id])
+  templates           templates           @relation(fields: [id_templates], references: [id])
+}
+
+model users_companies {
+  id                  Int                 @id   @default(autoincrement())
+  id_users            Int
+  id_companies        Int
+  id_roles            Int
+  users               users               @relation(fields: [id_users], references: [id])
+  companies           companies           @relation(fields: [id_companies], references: [id])
+  roles               roles               @relation(fields: [id_roles], references: [id])
+}
