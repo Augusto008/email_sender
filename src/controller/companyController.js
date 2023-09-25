@@ -25,6 +25,18 @@ export default {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
+    },
+
+    async allCompanies(req, res) {
+        try {
+            const result = await actionDB.all('companies');
+            if (!result.success) {
+                return res.status(404).json({ success: false, message: result.message });
+            }
+            return res.status(200).json({ success: true, message: result });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
     }
 
 }
