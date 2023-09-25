@@ -37,6 +37,21 @@ export default {
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
+    },
+
+    async findCompany(req, res) {
+
+        try {
+            const {id} = req.params;
+            const result = await actionDB.unique('companies', {id: Number(id)});
+            if(!result.success) {
+                return res.status(404).json({success: false, result})
+            }
+            return res.status(200).json({success: true, message: result });
+        } catch (error) {
+            return res.status(500).json({success: false, message: error.message});
+        }
+
     }
 
 }
