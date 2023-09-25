@@ -32,7 +32,7 @@ export default class StandardDAO {
 
     async unique(table, where) {
         try {
-            let result = await prisma[table].one({
+            let result = await prisma[table].findUnique({
                 where,
             });
             if (!result) {
