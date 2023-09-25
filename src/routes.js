@@ -22,7 +22,7 @@ const route = Router();
 // route.delete('/destroy_role/:id', roleController.destroyRole);
 
 route.post('/company', companyController.createCompany);
-// route.get('/companies', companyController.allCompanies);
+route.get('/companies', companyController.allCompanies);
 // route.get('/company/:id', companyController.findCompany);
 // route.put('/company/:id', companyController.updateCompany);
 // route.delete('/company/:id', companyController.deleteCompany);
