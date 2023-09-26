@@ -24,9 +24,9 @@ const route = Router();
 route.post('/company', companyController.createCompany);
 route.get('/companies', companyController.allCompanies);
 route.get('/company/:id', companyController.findCompany);
-// route.put('/company/:id', companyController.updateCompany);
-// route.delete('/company/:id', companyController.deleteCompany);
-// route.delete('/destroy_company/:id', companyController.destroyCompany);
+route.put('/company/:id', companyController.updateCompany);
+route.delete('/company/:id', companyController.deleteCompany);
+route.delete('/destroy_company/:id', companyController.destroyCompany);
 
 // route.post('/domain', domainController.createDomain);
 // route.get('/domains', domainController.allDomains);
