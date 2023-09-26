@@ -12,8 +12,8 @@ export default {
             const add = { name };
 
             const company = await companyValidator.validateCompanyPOST(add);
-            if(!company.success) {
-                return res.status(400).json({ success:false, message: company.message });
+            if (!company.success) {
+                return res.status(400).json({ success: false, message: company.message });
             };
 
             const result = await actionDB.create('companies', add);
@@ -31,27 +31,25 @@ export default {
         try {
             const result = await actionDB.all('companies');
             if (!result.success) {
-                return res.status(404).json({ success: false, message: result.message });
+                return res.status(404).json({ success: false, message: "There are no registered companies" });
             }
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
     },
 
     async findCompany(req, res) {
-
         try {
-            const {id} = req.params;
-            const result = await actionDB.unique('companies', {id: Number(id)});
-            if(!result.success) {
-                return res.status(404).json({success: false, result})
+            const { id } = req.params;
+            const result = await actionDB.unique('companies', { id: Number(id) });
+            if (!result.success) {
+                return res.status(404).json({ success: false, message: "Company not found" })
             }
-            return res.status(200).json({success: true, message: result });
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
-            return res.status(500).json({success: false, message: error.message});
+            return res.status(500).json({ success: false, message: error.message });
         }
-
     }
 
 }
