@@ -50,6 +50,24 @@ export default {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
+    },
+
+    async updateCompany(req, res) {
+        try {
+            const { id } = req.params;
+            const { name } = req.body;
+
+            const toUpdate = await companyValidator.validateCompanyUPDATE({ id: Number(id), name });
+            if (!toUpdate.success) {
+                return res.status(500).json({ success: false, message: toUpdate.message });
+            }
+
+            const result = await actionDB.update('companies', { id: Number(id) }, { name });
+
+            return res.status(200).json({ success: true, message: result });
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
     }
 
 }
