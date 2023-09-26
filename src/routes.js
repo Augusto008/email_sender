@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import companyController from './controller/companyController';
+import roleController from './controller/roleController';
 
 const route = Router();
 
@@ -14,12 +15,12 @@ const route = Router();
 // route.delete('/user/:id', userController.deleteUser);
 // route.delete('/destroy_user/:id', userController.destroyUser);
 
-// route.post('/role', roleController.createRole);
-// route.get('/roles', roleController.allRoles);
-// route.get('/role/:id', roleController.findRole);
-// route.put('/role/:id', roleController.updateRole);
-// route.delete('/role/:id', roleController.deleteRole);
-// route.delete('/destroy_role/:id', roleController.destroyRole);
+route.post('/role', roleController.createRole);
+route.get('/roles', roleController.allRoles);
+route.get('/role/:id', roleController.findRole);
+route.put('/role/:id', roleController.updateRole);
+route.delete('/role/:id', roleController.deleteRole);
+route.delete('/destroy_role/:id', roleController.destroyRole);
 
 route.post('/company', companyController.createCompany);
 route.get('/companies', companyController.allCompanies);
