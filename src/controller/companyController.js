@@ -83,6 +83,21 @@ export default {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
+    },
+
+    async destroyCompany(req, res) {
+        try {
+            const { id } = req.params;
+
+            const result = await actionDB.destroy('companies', { id: Number(id) });
+            if (!result.success) {
+                return res.status(500).json({ success: false, message: result.message });
+            }
+
+            return res.status(200).json({ success: true, message: result });
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
     }
 
 }
