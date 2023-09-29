@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import companyController from './controller/companyController';
 import roleController from './controller/roleController';
+import userController from './controller/userController';
 
 const route = Router();
 
@@ -8,12 +9,12 @@ const route = Router();
 
 // route.post('/sender/:domain/:template', emailController.sendSelected);
 
-// route.post('/user/:company/:role', userController.createUser);
-// route.get('/users', userController.allUsers);
-// route.get('/user/:id', userController.findUser);
-// route.put('/user/:id', userController.updateUser);
-// route.delete('/user/:id', userController.deleteUser);
-// route.delete('/destroy_user/:id', userController.destroyUser);
+route.post('/user/:company/:role', userController.createUser);
+route.get('/users', userController.allUsers);
+route.get('/user/:id', userController.findUser);
+route.put('/user/:id', userController.updateUser);
+route.delete('/user/:id', userController.deleteUser);
+route.delete('/destroy_user/:id', userController.destroyUser);
 
 route.post('/role', roleController.createRole);
 route.get('/roles', roleController.allRoles);
