@@ -9,12 +9,13 @@ export default class CompanyValidator {
     async validateCompanyPOST(company) {
 
         try {
-            const match = await regExp.nameMatch(company.name);
+            let {name} = company;
+            const match = await regExp.match({name});
             if (!match.success) {
-                throw new Error("Invalid company name");
+                throw new Error(`Invalid company ${match.message}`);
             };
 
-            const exist = await actionDB.many('companies', company);
+            const exist = await actionDB.many('companies', {name});
             if (exist.success) {
                 throw new Error("This name is already in use!");
             };
@@ -29,14 +30,15 @@ export default class CompanyValidator {
     async validateCompanyUPDATE(company) {
 
         try {
-            const match = await regExp.nameMatch(company.name);
+            var {name} = company;
+            const match = await regExp.match({name});
             if (!match.success) {
-                throw new Error("Invalid company name");
+                throw new Error(`Invalid company ${match.message}`);
             };
 
-            const compare = await actionDB.many('companies', { name: company.name });
+            const compare = await actionDB.many('companies', {name});
             if (compare.success) {
-                throw new Error("This name is already in use");
+                throw new Error("This company name is already in use");
             };
 
             const exist = await actionDB.unique('companies', { id: Number(company.id) });
