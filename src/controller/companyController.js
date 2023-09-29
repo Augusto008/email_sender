@@ -11,9 +11,9 @@ export default {
             const { name } = req.body;
             const add = { name };
 
-            const company = await companyValidator.validateCompanyPOST(add);
-            if (!company.success) {
-                return res.status(400).json({ success: false, message: company.message });
+            const valid = await companyValidator.validateCompanyPOST(add);
+            if (!valid.success) {
+                return res.status(400).json({ success: false, message: valid.message });
             };
 
             const result = await actionDB.create('companies', add);
@@ -21,7 +21,7 @@ export default {
             if (!result.success) {
                 return res.status(400).json({ success: false, message: result.message });
             };
-            return res.status(200).json({ success: true, result: result.result });
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -63,8 +63,10 @@ export default {
             }
 
             const result = await actionDB.update('companies', { id: Number(id) }, { name });
-
-            return res.status(200).json({ success: true, message: result });
+            if(!result.success) {
+                return res.status(500).json({ success: false, message: result.message });
+            }
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -79,7 +81,7 @@ export default {
                 return res.status(500).json({ success: false, message: result.message });
             }
 
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: "company successfully deleted" });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -94,7 +96,7 @@ export default {
                 return res.status(500).json({ success: false, message: result.message });
             }
 
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: "company successfully destroyed" });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
