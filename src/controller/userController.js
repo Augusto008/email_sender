@@ -60,23 +60,28 @@ export default {
     async updateUser(req, res) {
         try {
             const { id } = req.params;
-            const { company, role, name, email, password } = req.body;
-            const toUpdate = { id_companies: company, id_roles: role, name, email, password };
+            const { name, email, password } = req.body;
+            const toUpdate = { name, email, password };
 
-            const valid = await userValidator.validateUserUPDATE({ toUpdate });
+            const valid = await userValidator.validateUserUPDATE({ id, toUpdate });
             if (!valid.success) {
-                return { success: false, message: valid.message }
+                return res.status(500).json({ success: false, message: valid.message });
             }
 
             if (toUpdate.email) {
-                const emailExist = await actionDB.many({ email });
+                let emailExist = await actionDB.many('users', { email });
                 if (emailExist.success) {
-                    return { success: false, message: "This email is already in use" };
+                    return res.status(403).json({ success: false, message: "This email is already in use" });
                 }
             }
 
             if (toUpdate.password) {
-                password = await bcrypt.hash(password, 8);
+                toUpdate.password = await bcrypt.hash(password, 8);
+            }
+
+            const result = await actionDB.update('users', { id: Number(id) }, toUpdate);
+            if(!result.success) {
+                return res.status(500).json({ success: false, message: result.result });
             }
 
             return res.status(200).json({ success: true, message: result.result });
@@ -103,13 +108,21 @@ export default {
     async destroyUser(req, res) {
         try {
             const { id } = req.params;
+            let destroyed;
 
-            const roles = await actionDB.many('users', {id: Number(id)});
-            console.log(roles);
+            const exist = await actionDB.many('users', {id: Number(id)});
+            if(!exist.success) {
+                return res.status(404).json({ success: false, message: "Incorrect parameters" });
+            }
 
-            const relations = await actionDB.destroy('users_companies', { id_users: Number(id) });
-            if (!relations.success) {
-                return res.status(500).json({ success: false, message: relations.message });
+            let relations = await actionDB.many('users_companies', { id_users: Number(id) });
+            if (relations.result.length > 0) {
+                relations.result.forEach(async element => {
+                    destroyed = await actionDB.destroy('users_companies', {id: element.id});
+                    if(!destroyed.success) {
+                        return res.status(500).json({ success: false, message: relations.message }); 
+                    }
+                });
             }
 
             const result = await actionDB.destroy('users', { id: Number(id) });
