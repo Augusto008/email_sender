@@ -9,12 +9,13 @@ export default class RoleValidator {
     async validateRolePOST(role) {
 
         try {
-            const match = await regExp.nameMatch(role.role);
+            const name = role.role;
+            const match = await regExp.match({ name });
             if (!match.success) {
-                throw new Error("Invalid role name");
+                throw new Error(`Invalid role ${match.message}`);
             };
 
-            const exist = await actionDB.many('roles', role);
+            const exist = await actionDB.many('roles', { role: name });
             if (exist.success) {
                 throw new Error("This role already exists");
             };
@@ -29,13 +30,13 @@ export default class RoleValidator {
     async validateRoleUPDATE(role) {
 
         try {
-            console.log(role);
-            const match = await regExp.nameMatch(role.role);
+            var name = role.role;
+            const match = await regExp.match({ name });
             if (!match.success) {
-                throw new Error("Invalid role name");
+                throw new Error(`Invalid role ${match.message}`);
             };
 
-            const compare = await actionDB.many('roles', { role: role.role });
+            const compare = await actionDB.many('roles', { role: name });
             if (compare.success) {
                 throw new Error("This role already exists");
             };
@@ -47,7 +48,7 @@ export default class RoleValidator {
 
             return {
                 success: true,
-                role: role.role,
+                role: name,
                 exist: exist.result,
             };
         } catch (error) {
