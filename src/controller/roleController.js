@@ -62,8 +62,11 @@ export default {
             }
 
             const result = await actionDB.update('roles', { id: Number(id) }, { role });
+            if (!result.success) {
+                return res.status(500).json({ success: false, message: result.message });
+            }
 
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -78,7 +81,7 @@ export default {
                 return res.status(500).json({ success: false, message: result.message });
             }
 
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: "Role successfully deleted" });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -93,7 +96,7 @@ export default {
                 return res.status(500).json({ success: false, message: result.message });
             }
 
-            return res.status(200).json({ success: true, message: result });
+            return res.status(200).json({ success: true, message: "Role successfully destroyed" });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
