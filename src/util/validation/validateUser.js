@@ -38,7 +38,8 @@ export default class UserValidator {
 
     async validateUserUPDATE(user) {
         try {
-            const actualUser = await actionUser.one(id);
+            const {id} = user;
+            const actualUser = await actionDB.unique('users', {id: Number(id)}, user.toUpdate);
             if (!actualUser) {
                 return { success: false, message: "incorrect Parameters" };
             }
