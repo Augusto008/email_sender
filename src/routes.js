@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import companyController from './controller/companyController';
+import domainController from './controller/domainController';
 import roleController from './controller/roleController';
+import templateController from './controller/templateController';
 import userController from './controller/userController';
 
 const route = Router();
@@ -30,28 +32,26 @@ route.put('/company/:id', companyController.updateCompany);
 route.delete('/company/:id', companyController.deleteCompany);
 route.delete('/destroy_company/:id', companyController.destroyCompany);
 
-// route.post('/domain', domainController.createDomain);
-// route.get('/domains', domainController.allDomains);
-// route.get('/domain/:id', domainController.findDomain);
-// route.put('/domain/:id', domainController.updateDomain);
-// route.delete('/domain/:id', domainController.deleteDomain);
-// route.delete('/destroy_domain/:id', domainController.destroyDomain);
+route.post('/domain/:company', domainController.createDomain);
+route.get('/domains', domainController.allDomains);
+route.get('/domain/:id', domainController.findDomain);
+route.put('/domain/:id', domainController.updateDomain);
+route.delete('/domain/:id', domainController.deleteDomain);
+route.delete('/destroy_domain/:id', domainController.destroyDomain);
 
-// route.post('/template', templateController.createTemplate);
-// route.get('/templates', templateController.allTemplates);
-// route.get('/template/:id', templateController.findTemplate);
-// route.put('/template/:id', templateController.updateTemplate);
-// route.delete('/template/:id', templateController.deleteTemplate);
-// route.delete('/destroy_template/:id', templateController.destroyTemplate);
+route.post('/template', templateController.createTemplate);
+route.get('/templates', templateController.allTemplates);
+route.get('/template/:id', templateController.findTemplate);
+route.put('/template/:id', templateController.updateTemplate);
+route.delete('/template/:id', templateController.deleteTemplate);
+route.delete('/destroy_template/:id', templateController.destroyTemplate);
 
 // route.post('/sender/:domain/:template', emailController.newJob);
 // route.get('/queues', emailController.allQueues);
-// route.get('/queue/:status', emailController.findQueue);
 // route.get('/jobs/:filter/:value', emailController.findJobs);
 // route.put('/queue/:status', emailController.queueReview);
-// route.put('/jobs/:status', emailController.jobsReview);
-// route.delete('/queue/:status', emailController.deleteQueue);
-// route.delete('/destroy_queue/:status', emailController.destroyQueue);
+// route.put('/jobs/:filter/:value', emailController.jobsReview);
+// route.delete('/queue/:filter', emailController.deleteQueue);
 // route.delete('/destroy_jobs/:filter/:value', emailController.destroyJobs);
 
 export { route };
