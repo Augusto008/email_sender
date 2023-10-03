@@ -14,7 +14,7 @@ export default class TemplateValidator {
             }
             
             const exist = await actionDB.many('templates', { title: template.title });
-            if(!exist.success) {
+            if(!exist.result.length > 0) {
                 return { success: false, message: "This template already exists" };
             }
 
@@ -35,6 +35,11 @@ export default class TemplateValidator {
             const match = await regExp.match(template);
             if(!match.success) {
                 return { success: false, message: match.message };
+            }
+            
+            const exist = await actionDB.many('templates', { title: template.title });
+            if(!exist.result.length > 0) {
+                return { success: false, message: "This template already exists" };
             }
 
             return { success: true };
