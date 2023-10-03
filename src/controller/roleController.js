@@ -8,8 +8,8 @@ export default {
 
     async createRole(req, res) {
         try {
-            const { role } = req.body;
-            const add = { role };
+            const { name } = req.body;
+            const add = { name };
 
             const valid  = await roleValidator.validateRolePOST(add);
             if (!valid.success) {
@@ -54,14 +54,14 @@ export default {
     async updateRole(req, res) {
         try {
             const { id } = req.params;
-            const { role } = req.body;
+            const { name } = req.body;
 
-            const toUpdate = await roleValidator.validateRoleUPDATE({ id: Number(id), role });
+            const toUpdate = await roleValidator.validateRoleUPDATE({ id: Number(id), name });
             if (!toUpdate.success) {
                 return res.status(500).json({ success: false, message: toUpdate.message });
             }
 
-            const result = await actionDB.update('roles', { id: Number(id) }, { role });
+            const result = await actionDB.update('roles', { id: Number(id) }, { name });
             if (!result.success) {
                 return res.status(500).json({ success: false, message: result.message });
             }
