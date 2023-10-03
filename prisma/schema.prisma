@@ -25,7 +25,7 @@ model roles {
   is_deleted        Boolean             @default(false)
   created_at        DateTime            @default(now())
   updated_at        DateTime            @updatedAt
-  role              String              @db.VarChar(25)    @unique
+  name              String              @db.VarChar(25)    @unique
   users_companies   users_companies[]
 }
 
@@ -47,21 +47,14 @@ model domains {
   created_at          DateTime              @default(now())
   updated_at          DateTime              @updatedAt
   name                String                @db.VarChar(100)    @unique
+  url                 String                @db.Text
+  logo                String                @db.VarChar(50)
+  sender              String                @db.VarChar(100)
+  replier             String                @db.VarChar(100)
+  contact             String                @db.VarChar(20)
+  footer              String?               @db.Text
   id_companies        Int
   companies           companies             @relation(fields: [id_companies], references: [id])
-  email_contents      email_contents[]
-}
-
-model email_contents {
-  id                  Int               @id @default(autoincrement())
-  status              String            @db.VarChar(25)
-  sender              String            @db.VarChar(100)
-  replier             String            @db.VarChar(100)
-  contact             String            @db.VarChar(20)
-  e_footer            String?           @db.Text
-  logo                String            @db.VarChar(50)
-  id_domains          Int
-  domains             domains           @relation(fields: [id_domains], references: [id])
   email_jobs          email_jobs[]
 }
 
@@ -76,7 +69,6 @@ model templates {
   receiver            String                @db.VarChar(10)
   body                String                @db.Text
   requirements        Json?                 @db.Json
-  url                 String?               @db.VarChar(100)   @unique
   description         String?
   email_jobs          email_jobs[]
 }
@@ -89,10 +81,10 @@ model email_jobs {
   attempts            Int?                @default(0)
   status              String              @db.VarChar(10)
   problems            Json?               @db.Json
-  received_contents   Json                @db.Json
-  id_email_contents   Int
+  received_content    Json                @db.Json
+  id_domains          Int
   id_templates        Int
-  email_contents      email_contents      @relation(fields: [id_email_contents], references: [id])
+  domains             domains             @relation(fields: [id_domains], references: [id])
   templates           templates           @relation(fields: [id_templates], references: [id])
 }
 
