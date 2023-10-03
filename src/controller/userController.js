@@ -26,7 +26,7 @@ export default {
                 return res.status(500).json({ success: false, message: error.message });
             };
 
-            return res.status(200).json({ success: true, message: result.message });
+            return res.status(200).json({ success: true, message: result.result });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -63,16 +63,9 @@ export default {
             const { name, email, password } = req.body;
             const toUpdate = { name, email, password };
 
-            const valid = await userValidator.validateUserUPDATE({ id, toUpdate });
+            const valid = await userValidator.validateUserUPDATE({ id, name, email, password });
             if (!valid.success) {
                 return res.status(500).json({ success: false, message: valid.message });
-            }
-
-            if (toUpdate.email) {
-                let emailExist = await actionDB.many('users', { email });
-                if (emailExist.success) {
-                    return res.status(403).json({ success: false, message: "This email is already in use" });
-                }
             }
 
             if (toUpdate.password) {
@@ -108,7 +101,6 @@ export default {
     async destroyUser(req, res) {
         try {
             const { id } = req.params;
-            let destroyed;
 
             const exist = await actionDB.many('users', {id: Number(id)});
             if(!exist.success) {
@@ -118,7 +110,7 @@ export default {
             let relations = await actionDB.many('users_companies', { id_users: Number(id) });
             if (relations.result.length > 0) {
                 relations.result.forEach(async element => {
-                    destroyed = await actionDB.destroy('users_companies', {id: element.id});
+                    let destroyed = await actionDB.destroy('users_companies', {id: element.id});
                     if(!destroyed.success) {
                         return res.status(500).json({ success: false, message: relations.message }); 
                     }
