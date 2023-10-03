@@ -21,9 +21,6 @@ export default class StandardDAO {
             let result = await prisma[table].findMany({
                 where,
             });
-            if (result.length === 0) {
-                return { success: false }
-            };
             return { success: true, result };
         } catch (error) {
             return { success: false, message: error.message };
@@ -64,6 +61,7 @@ export default class StandardDAO {
                 where,
                 data,
             });
+
             if (!result) {
                 return { success: false };
             };
@@ -80,6 +78,24 @@ export default class StandardDAO {
                 data: {
                     is_active: false,
                     is_deleted: true,
+                },
+            });
+            if (!result) {
+                return { success: false };
+            };
+            return { success: true, result };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    }
+
+    async restore(table, where) {
+        try {
+            let result = await prisma[table].update({
+                where,
+                data: {
+                    is_active: true,
+                    is_deleted: false,
                 },
             });
             if (!result) {
