@@ -2,12 +2,13 @@ import { Router } from 'express';
 import companyController from './controller/companyController';
 import domainController from './controller/domainController';
 import roleController from './controller/roleController';
+import sessionController from './controller/sessionController';
 import templateController from './controller/templateController';
 import userController from './controller/userController';
 
 const route = Router();
 
-// route.post('/session', sessionController.login);
+route.post('/initiate_session', sessionController.login);
 
 // route.post('/sender/:domain/:template', emailController.sendSelected);
 
