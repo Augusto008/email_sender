@@ -16,7 +16,7 @@ export default class CompanyValidator {
             };
 
             const exist = await actionDB.many('companies', {name});
-            if (exist.success) {
+            if (exist.result.length > 0) {
                 throw new Error("This name is already in use!");
             };
 
@@ -37,7 +37,7 @@ export default class CompanyValidator {
             };
 
             const compare = await actionDB.many('companies', {name});
-            if (compare.success) {
+            if (compare.result.length > 0) {
                 throw new Error("This company name is already in use");
             };
 
@@ -46,11 +46,7 @@ export default class CompanyValidator {
                 throw new Error("This company does not exist");
             };
 
-            return {
-                success: true,
-                name: company.name,
-                company: exist.result,
-            };
+            return { success: true };
         } catch (error) {
             return { success: false, message: error.message };
         }
