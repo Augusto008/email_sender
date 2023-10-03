@@ -9,13 +9,13 @@ export default class UserDAO {
         try {
             let result = await prisma.$queryRaw`WITH 
                     company_result AS (
-                        SELECT id, name FROM companies WHERE id = ${data.company}
+                        SELECT id, \"name\" FROM companies WHERE id = ${data.id_companies}
                     ),
                     role_result AS (
-                        SELECT id, role FROM roles WHERE id = ${data.role}
+                        SELECT id, \"name\" FROM roles WHERE id = ${data.id_roles}
                     )
                 SELECT 
-                    company_result.id as id_companies, company_result.name as company_name, role_result.id as id_roles, role_result.role as role_name
+                    company_result.id as id_companies, company_result.name as company_name, role_result.id as id_roles, role_result.name as role_name
                 FROM 
                     company_result, role_result
                 WHERE
@@ -64,7 +64,7 @@ export default class UserDAO {
                 return { success: false, message: 'Error creating user' };
             }
             
-            return { success: true, message: result };
+            return { success: true, result: result };
         } catch (error) {
             return { success: false, message: error.message };
         }
