@@ -17,7 +17,6 @@ export default {
             };
 
             const result = await actionDB.create('companies', add);
-
             if (!result.success) {
                 return res.status(400).json({ success: false, message: result.message });
             };
@@ -57,8 +56,8 @@ export default {
             const { id } = req.params;
             const { name } = req.body;
 
-            const toUpdate = await companyValidator.validateCompanyUPDATE({ id: Number(id), name });
-            if (!toUpdate.success) {
+            const valid = await companyValidator.validateCompanyUPDATE({ id: Number(id), name });
+            if (!valid.success) {
                 return res.status(500).json({ success: false, message: toUpdate.message });
             }
 
