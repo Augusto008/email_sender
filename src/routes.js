@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import companyController from './controller/companyController';
 import domainController from './controller/domainController';
+import jobController from './controller/jobController';
 import roleController from './controller/roleController';
 import sessionController from './controller/sessionController';
 import templateController from './controller/templateController';
@@ -47,7 +48,7 @@ route.put('/template/:id', templateController.updateTemplate);
 route.delete('/template/:id', templateController.deleteTemplate);
 route.delete('/destroy_template/:id', templateController.destroyTemplate);
 
-// route.post('/sender/:domain/:template', emailController.newJob);
+route.post('/sender/:domain/:template', jobController.createJob);
 // route.get('/queues', emailController.allQueues);
 // route.get('/jobs/:filter/:value', emailController.findJobs);
 // route.put('/queue/:status', emailController.queueReview);
