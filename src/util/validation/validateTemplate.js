@@ -14,7 +14,7 @@ export default class TemplateValidator {
             }
             
             const exist = await actionDB.many('templates', { title: template.title });
-            if(!exist.result.length > 0) {
+            if(exist.result.length > 0) {
                 return { success: false, message: "This template already exists" };
             }
 
