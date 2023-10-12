@@ -49,11 +49,9 @@ route.delete('/template/:id', templateController.deleteTemplate);
 route.delete('/destroy_template/:id', templateController.destroyTemplate);
 
 route.post('/sender/:domain/:template', jobController.createJob);
-// route.get('/queues', emailController.allQueues);
-// route.get('/jobs/:filter/:value', emailController.findJobs);
-// route.put('/queue/:status', emailController.queueReview);
-// route.put('/jobs/:filter/:value', emailController.jobsReview);
-// route.delete('/queue/:filter', emailController.deleteQueue);
-// route.delete('/destroy_jobs/:filter/:value', emailController.destroyJobs);
+route.get('/jobs', jobController.allJobs);
+route.get('/job/:id', jobController.findJob);
+route.put('/job/:id', jobController.updateJob);
+route.delete('/destroy_job/:id', jobController.destroyJob);
 
 export { route };
