@@ -6,7 +6,7 @@ import StandardDAO from "./dao/standardObj";
 import SenderController from "./controller/senderController";
 
 const prisma = new PrismaClient();
-const actionJob = new StandardDAO();
+const actionDB = new StandardDAO();
 const sender = SenderController;
 const app = express();
 var counter = 0;
@@ -47,45 +47,34 @@ cron.schedule(' 10/* * * * * * ', async () => {
                         let attempts = job.attempts + 1;
                         let result = await sender.emailSender(content);
 
-                        if (!result.success && job.status === 'pending') {
-                            await prisma.email_jobs.update({
-                                where: { id: job.id },
-                                data: {
-                                    status: 'retry',
-                                    attempts: attempts
-                                }
-                            });
-                            throw result.error;
-                        } else if (!result.success && event.attempts < 2) {
-                            await prisma.email_jobs.update({
-                                where: { id: job.id },
-                                data: { attempts }
-                            });
-                            throw result.error;
-                        } else if (!result.success) {
-                            await prisma.email_jobs.update({
-                                where: { id: job.id },
-                                data: {
-                                    is_broken: true,
-                                    status: 'canceled',
-                                    attempts,
-                                    problems: result.message
-                                }
-                            });
-                            throw result.error;
-                        };
-
-                        await prisma.email_jobs.update({
-                            where: { id: job.id },
-                            data: {
-                                status: "sent",
-                                attempts
+                        let where = { id: job.id };
+                        let is_broken = false;
+                        let status = job.status;
+                        let problems = job.problems;
+                        if (!result.success) {
+                            array_push(problems, result.message);
+                            if (attempts === 1) {
+                                console.log("retry");
+                                status = "retry";
+                            } else if (status === 3) {
+                                console.log("failed");
+                                status = "failed";
+                            } else if (status === 4) {
+                                console.log("fauty");
+                                status = "fauty";
+                            } else if (status === 6) {
+                                console.log("canceled");
+                                is_broken = true;
+                                status = "canceled";
                             }
-                        })
+                            let data = { status, attempts, problems: result.message, is_broken }
+                            await actionDB.update('email_jobs', where, data).catch(error => { throw new Error(error) });
+                        } else {
+                            await actionDB.update('email_jobs', where, { data: { status: "sent", attempts } }).catch(error => { throw new Error(error) });
+                        }
 
                     } else {
-                        await prisma.email_jobs.update({
-                            where: { id: job.id },
+                        await actionDB.update('email_jobs', where, {
                             data: {
                                 is_broken: true,
                                 status: 'canceled',
