@@ -73,7 +73,7 @@ export default {
             }
 
             const result = await actionDB.update('users', { id: Number(id) }, toUpdate);
-            if(!result.success) {
+            if (!result.success) {
                 return res.status(500).json({ success: false, message: result.result });
             }
 
@@ -102,17 +102,17 @@ export default {
         try {
             const { id } = req.params;
 
-            const exist = await actionDB.many('users', {id: Number(id)});
-            if(!exist.success) {
+            const exist = await actionDB.many('users', { id: Number(id) });
+            if (!exist.success) {
                 return res.status(404).json({ success: false, message: "Incorrect parameters" });
             }
 
             let relations = await actionDB.many('users_companies', { id_users: Number(id) });
             if (relations.result.length > 0) {
                 relations.result.forEach(async element => {
-                    let destroyed = await actionDB.destroy('users_companies', {id: element.id});
-                    if(!destroyed.success) {
-                        return res.status(500).json({ success: false, message: relations.message }); 
+                    let destroyed = await actionDB.destroy('users_companies', { id: element.id });
+                    if (!destroyed.success) {
+                        return res.status(500).json({ success: false, message: relations.message });
                     }
                 });
             }

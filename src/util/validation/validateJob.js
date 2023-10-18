@@ -9,7 +9,7 @@ export default class JobValidator {
     async validateJobPOST(job) {
         try {
             const match = await regExp.match(job);
-            if(!match.success) {
+            if (!match.success) {
                 return { success: false, message: match.message };
             }
 
@@ -21,18 +21,18 @@ export default class JobValidator {
 
     async validateJobUPDATE(job) {
         try {
-            const {id, toUpdate} = job;
-            const actualJob = await actionDB.unique('job', {id: Number(id)});
+            const { id, toUpdate } = job;
+            const actualJob = await actionDB.unique('job', { id: Number(id) });
             if (!actualJob) {
                 return { success: false, message: "This job does not exist" };
             }
 
             const match = await regExp.match(toUpdate);
-            if(!match.success) {
+            if (!match.success) {
                 return { success: false, message: match.message };
             }
-            
-            return {success: true};
+
+            return { success: true };
         } catch (error) {
             return { success: false, message: error.message };
         }

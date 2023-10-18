@@ -8,9 +8,9 @@ export default {
 
     async login(req, res) {
         try {
-            const {email, password} = req.body;
-            const user = await actionDB.unique('users', {email});
-            if(user.result.length === 0) {
+            const { email, password } = req.body;
+            const user = await actionDB.unique('users', { email });
+            if (user.result.length === 0) {
                 return res.status(500).json({ success: false, message: "Email ou senha incorreto." });
             }
 
@@ -19,7 +19,7 @@ export default {
             if (!(await bcrypt.compare(password, pass))) {
                 return res.status(500).json({ success: false, message: "Email ou senha incorreto." });
             }
-    
+
             const { id } = user.result;
 
             return res.status(200).json({
