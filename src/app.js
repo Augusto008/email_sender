@@ -7,6 +7,7 @@ import SenderController from "./controller/senderController";
 
 const prisma = new PrismaClient();
 const actionJob = new StandardDAO();
+const sender = SenderController;
 const app = express();
 var counter = 0;
 
@@ -41,8 +42,8 @@ cron.schedule(' 10/* * * * * * ', async () => {
             })
             await Promise.all(toSend.map(async job => {
                 try {
-                    if (job.content) {
-                        let content = { tmpl: job.templates, domain: job.domains, content: job.content };
+                    if (job.received_content) {
+                        let content = { tmpl: job.templates, domain: job.domains, content: job.received_content };
                         let attempts = job.attempts + 1;
                         let result = await sender.emailSender(content);
 
