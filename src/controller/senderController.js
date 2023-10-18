@@ -4,9 +4,9 @@ const handlebars = require("handlebars");
 export default {
     async emailSender(job) {
         try {
-            const domainTitle = job.domain.title;
+            const domainTitle = job.domain.name;
             const domainUrl = job.domain.url;
-            const domainSender = job.domain.sebder;
+            const domainSender = job.domain.sender;
             const domainReplier = job.domain.replier;
             const domainContact = job.domain.contact;
             const domainFooter = job.domain.footer;
@@ -20,12 +20,14 @@ export default {
 
             let template = job.tmpl.body;
             let subject = job.tmpl.subject;
-            let receiver = "";
+            let receiver;
 
             if (job.tmpl.receiver === "domain") {
                 receiver = domainReq = plier;
             } else if (job.tmpl.receiver === "user") {
                 receiver = userEmail;
+            } else if (job.tmpl.receiver === "both") {
+
             } else {
                 return { success: false, message: "Invalid receiver!" };
             }
@@ -42,8 +44,8 @@ export default {
                 host: "sandbox.smtp.mailtrap.io",
                 port: 2525,
                 auth: {
-                    user: "",
-                    pass: ""
+                    user: "fd4768ebbe1b10",
+                    pass: "9c4a64855d616b"
                 }
             });
 
