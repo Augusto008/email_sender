@@ -21,7 +21,7 @@ cron.schedule(' 10/* * * * * * ', async () => {
         count(*) as amout_jobs
         from email_jobs ej
         inner join domains d on ej.id_domains = d.id
-        where ej.status = 'pending' or ej.status = 'retry'
+        where ej.status = 'pending' or ej.status = 'retry' or ej.status = 'reviwed' or ej.status = 'fauty'
         group by 1`;
 
         await Promise.all(domains.map(async event => {
@@ -52,23 +52,23 @@ cron.schedule(' 10/* * * * * * ', async () => {
                         let status = job.status;
                         let problems = job.problems;
                         if (!result.success) {
-                            array_push(problems, result.message);
                             if (attempts === 1) {
-                                console.log("retry");
+                                problems = { [attempts]: result.message }
                                 status = "retry";
-                            } else if (status === 3) {
-                                console.log("failed");
-                                status = "failed";
-                            } else if (status === 4) {
-                                console.log("fauty");
-                                status = "fauty";
-                            } else if (status === 6) {
-                                console.log("canceled");
-                                is_broken = true;
-                                status = "canceled";
+                            } else if (attempts > 1) {
+                                problems = Object.assign(job.problems, ({ [attempts]: result.message }));
+                                if (attempts === 3) {
+                                    status = "failed";
+                                } else if (attempts === 4) {
+                                    status = "fauty";
+                                } else if (attempts === 6) {
+                                    is_broken = true;
+                                    status = "canceled";
+                                }
                             }
-                            let data = { status, attempts, problems: result.message, is_broken }
-                            await actionDB.update('email_jobs', where, data).catch(error => { throw new Error(error) });
+                                let data = { attempts, status, problems, is_broken }
+                                console.log(attempts, status);
+                                await actionDB.update('email_jobs', where, data).catch(error => { throw new Error(error) });
                         } else {
                             await actionDB.update('email_jobs', where, { data: { status: "sent", attempts } }).catch(error => { throw new Error(error) });
                         }
